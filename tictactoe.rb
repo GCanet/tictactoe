@@ -1,18 +1,20 @@
-bubblesort = [4,3,78,2,0,2]
+# classe tictactoe define tablero
+class Tictactoe
+  @@tablero = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+  ]
 
-def bubble_sort(bubblesort)
-  bubblesort_largo = bubblesort.size
-  return bubblesort if bubblesort_largo <= 1
-
-    loop do
-    cambiado = false
-    (bubblesort_largo - 1).times do |indiceACTUAL|
-      if bubblesort[indiceACTUAL] > bubblesort[indiceACTUAL+1]
-        bubblesort[indiceACTUAL], bubblesort[indiceACTUAL+1] = bubblesort[indiceACTUAL+1], bubblesort[indiceACTUAL]
-        cambiado = true
-      end
-    end
-    break if not cambiado
-    end
-  bubblesort
+  def print_tablero
+    divisor = '--+---+--'
+    puts "#{@@tablero[0][0]} | #{@@tablero[0][1]} | #{@@tablero[0][2]}"
+    puts divisor
+    puts "#{@@tablero[1][0]} | #{@@tablero[1][1]} | #{@@tablero[1][2]}"
+    puts divisor
+    puts "#{@@tablero[2][0]} | #{@@tablero[2][1]} | #{@@tablero[2][2]}"
+  end
 end
+
+new_game = Tictactoe.new
+new_game.print_tablero
