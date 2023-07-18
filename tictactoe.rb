@@ -1,14 +1,22 @@
 # classe jugador define jugador y escoge posicion
 class Jugador
-  attr_reader :marker, :name
+  attr_reader :simbolo, :nombre
 
   def initialize
     @tictactoe = tictactoe
-    @marker = marker
-    @name = name
+    @simbolo = simbolo
+    @nombre = nombre
   end
 
   def escogerposi
+    loop do
+      puts "#{@nombre}, escoge un numero entre las posiciones disponibles:"
+      escogerposi = gets.chomp.to_i
+      if @tictactoe.posiciones_dispo.include?(escogerposi)
+        return escogerposi
+      end
+      puts "Input invalido."
+    end
   end
 end
 
@@ -55,9 +63,20 @@ class Tictactoe
   end
 
   def jugar_again?
+    loop do
+      print "Jugar otra vez? y/n"
+      awnser = gets.chomp.downcase
+      if awnser == 'n'
+        exit
+      elsif awnser == 'y'
+        initialize
+        partida
+      end
+    end
   end
 
   def cambiar_jugador
+    @jugador_actual = @jugador_actual == @jugadores[0] ? @jugadores[1] : @jugadores[0]
   end
 
   def partida
@@ -69,11 +88,11 @@ class Tictactoe
       sleep(0.5)
       posicion_elegida = @jugador_actual.escogerposi
       update_posiciones_dispo(posicion_elegida)
-      @@tablero[posicion_elegida - 1] = @jugador_actual.marker
+      @@tablero[posicion_elegida - 1] = @jugador_actual.simbolo
       if winner?
         print_tablero
         sleep(0.5)
-        puts "El ganador es: #{@jugador_actual.name}"
+        puts "El ganador es: #{@jugador_actual.nombre}"
         jugar_again?
       elsif draw?
         print_tablero
