@@ -2,27 +2,31 @@
 class Jugador
   attr_reader :simbolo, :nombre
 
-  def initialize
+  def initialize(tictactoe, simbolo, nombre)
     @tictactoe = tictactoe
     @simbolo = simbolo
     @nombre = nombre
   end
 
+## comprobar q las posiciones van entre 0 y 3 o escalable****
   def escogerposi
     loop do
-      puts "#{@nombre}, escoge un numero entre las posiciones disponibles:"
-      escogerposi = gets.chomp.to_i
-      if @tictactoe.posiciones_dispo.include?(escogerposi)
-        return escogerposi
+      puts "#{@nombre}, escoge un numero de vertice X:"
+      escogerposiX = gets.to_i
+      puts "#{@nombre}, escoge un numero de vertice Y:"
+      escogerposiY = gets.to_i
+      if @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1].zero?
+        @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1] = @jugador_actual.simbolo
+      else
+        puts "Posicion escogida no esta disponible."
       end
-      puts "Input invalido."
     end
   end
 end
 
 # classe tictactoe define tablero y ejecuta funcion jugar
 class Tictactoe
-  attr_reader :posiciones_dispo
+  attr_reader :tablero
 
   def initialize
     @jugadores = [
@@ -31,11 +35,6 @@ class Tictactoe
     ]
     @jugador_actual = @jugadores[0]
     @@tablero = [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
-    ]
-    @posiciones_dispo = [
       [0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]
@@ -51,18 +50,20 @@ class Tictactoe
     puts "#{@@tablero[2][0]} | #{@@tablero[2][1]} | #{@@tablero[2][2]}"
   end
 
-  def ganador?
+  def ganador
+    return false
   end
 
-  def empate?
-    @posiciones_dispo.empty?
+  def empate
+    for i in @@tablero do
+      if @@tablero[i].includes(0)
+        return false
+      end
+    end
+    return true
   end
 
-  def update_posiciones_dispo(pos)
-    @posiciones_dispo.delete(pos)
-  end
-
-  def jugar_again?
+  def jugar_again
     loop do
       print "Jugar otra vez? y/n"
       awnser = gets.chomp.downcase
@@ -80,25 +81,23 @@ class Tictactoe
   end
 
   def partida
-    puts 'Bienvenidos a una partida de tres en ralla!'
-    sleep(2)
+    puts 'Bienvenidos a una partida de tres en raya!'
+    sleep(1)
     loop do
       puts 'Tablero:'
       print_tablero
       sleep(0.5)
-      posicion_elegida = @jugador_actual.escogerposi
-      update_posiciones_dispo(posicion_elegida)
-      @@tablero[posicion_elegida - 1] = @jugador_actual.simbolo
-      if winner?
+      @jugador_actual.escogerposi
+      if ganador(@jugador_actual)
         print_tablero
         sleep(0.5)
         puts "El ganador es: #{@jugador_actual.nombre}"
-        jugar_again?
-      elsif draw?
+        jugar_again
+      elsif empate
         print_tablero
         sleep(0.5)
         puts 'Empate!'
-        jugar_again?
+        jugar_again
       end
 
       cambiar_jugador
@@ -107,4 +106,4 @@ class Tictactoe
 end
 
 new_game = Tictactoe.new
-new_game.print_tablero
+new_game.partida
