@@ -15,10 +15,11 @@ class Jugador
       escogerposiX = gets.to_i
       puts "#{@nombre}, escoge un numero de vertice Y:"
       escogerposiY = gets.to_i
-      if @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1].zero?
-        @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1] = @jugador_actual.simbolo
+      if @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1] == 0
+        @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1] = @simbolo
+        return
       else
-        puts "Posicion escogida no esta disponible."
+        puts 'Posicion escogida no esta disponible.'
       end
     end
   end
@@ -34,7 +35,7 @@ class Tictactoe
       Jugador.new(self, 'o', 'Jugador2')
     ]
     @jugador_actual = @jugadores[0]
-    @@tablero = [
+    @tablero = [
       [0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]
@@ -43,11 +44,11 @@ class Tictactoe
 
   def print_tablero
     divisor = '--+---+--'
-    puts "#{@@tablero[0][0]} | #{@@tablero[0][1]} | #{@@tablero[0][2]}"
+    puts "#{@tablero[0][0]} | #{@tablero[0][1]} | #{@tablero[0][2]}"
     puts divisor
-    puts "#{@@tablero[1][0]} | #{@@tablero[1][1]} | #{@@tablero[1][2]}"
+    puts "#{@tablero[1][0]} | #{@tablero[1][1]} | #{@tablero[1][2]}"
     puts divisor
-    puts "#{@@tablero[2][0]} | #{@@tablero[2][1]} | #{@@tablero[2][2]}"
+    puts "#{@tablero[2][0]} | #{@tablero[2][1]} | #{@tablero[2][2]}"
   end
 
   def ganador
@@ -55,12 +56,12 @@ class Tictactoe
   end
 
   def empate
-    for i in @@tablero do
-      if @@tablero[i].includes(0)
+    for row in @tablero do
+      if row.include?(0)
         return false
       end
     end
-    return true
+    true
   end
 
   def jugar_again
