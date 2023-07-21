@@ -8,14 +8,31 @@ class Jugador
     @nombre = nombre
   end
 
-## comprobar q las posiciones van entre 0 y 3 o escalable****
   def escogerposi
+    escogerposiX = -1
+    escogerposiY = -1
     loop do
-      puts "#{@nombre}, escoge un numero de vertice X:"
-      escogerposiX = gets.to_i
-      puts "#{@nombre}, escoge un numero de vertice Y:"
-      escogerposiY = gets.to_i
-      if @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1] == 0
+      loop do
+        puts "#{@nombre}, escoge un numero de vertice X:"
+        escogerposiX = gets
+        escogerposiX.match(/[0-9]/) ? escogerposiX = escogerposiX.to_i : next
+        if escogerposiX > @tictactoe.tablero.length
+          puts "El número escogido no es válido. Introduzca un nuevo valor entre 0 y #{@tictactoe.tablero.length}:"
+        else
+          break
+        end
+      end
+      loop do
+        puts "#{@nombre}, escoge un numero de vertice Y:"
+        escogerposiY = gets
+        escogerposiY.match(/[0-9]/) ? escogerposiY = escogerposiY.to_i : next
+        if escogerposiY > @tictactoe.tablero.length
+          puts "El número escogido no es válido. Introduzca un nuevo valor entre 0 y #{@tictactoe.tablero.length}:"
+        else
+          break
+        end
+      end
+      if @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1] == ' '
         @tictactoe.tablero[escogerposiX - 1][escogerposiY - 1] = @simbolo
         return
       else
@@ -27,37 +44,70 @@ end
 
 # classe tictactoe define tablero y ejecuta funcion jugar
 class Tictactoe
-  attr_reader :tablero
+  attr_accessor :tablero
 
   def initialize
     @jugadores = [
-      Jugador.new(self, 'x', 'Jugador1'),
-      Jugador.new(self, 'o', 'Jugador2')
+      Jugador.new(self, 'x', 'Bayer'),
+      Jugador.new(self, 'o', 'kaNEt')
     ]
     @jugador_actual = @jugadores[0]
     @tablero = [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
+      [' ', ' ', ' '],
+      [' ', ' ', ' '],
+      [' ', ' ', ' ']
     ]
   end
 
   def print_tablero
-    divisor = '--+---+--'
-    puts "#{@tablero[0][0]} | #{@tablero[0][1]} | #{@tablero[0][2]}"
+    divisor = '---+---+---'
+    puts " #{@tablero[0][0]} | #{@tablero[0][1]} | #{@tablero[0][2]} "
     puts divisor
-    puts "#{@tablero[1][0]} | #{@tablero[1][1]} | #{@tablero[1][2]}"
+    puts " #{@tablero[1][0]} | #{@tablero[1][1]} | #{@tablero[1][2]} "
     puts divisor
-    puts "#{@tablero[2][0]} | #{@tablero[2][1]} | #{@tablero[2][2]}"
+    puts " #{@tablero[2][0]} | #{@tablero[2][1]} | #{@tablero[2][2]} "
   end
 
-  def ganador
-    return false
+  def ganador(*)
+    diagonal1 = []
+    diagonal2 = []
+    for row in @tablero.transpose do
+      if (row.uniq.size <= 1) && (row[0] == @jugador_actual.simbolo)
+        return true
+      end
+    end
+    for row in @tablero do
+      if (row.uniq.size <= 1) && (row[0] == @jugador_actual.simbolo)
+        return true
+      end
+    end
+    @tablero.each_with_index do |row, i|
+      row.each_with_index do |col, j|
+        if i == j
+          diagonal1.push(col)
+        end
+      end
+    end
+    @tablero.reverse.each_with_index do |row, i|
+      row.each_with_index do |col, j|
+        if i == j
+          diagonal2.push(col)
+        end
+      end
+    end
+    if (diagonal1.uniq.size <= 1) && (diagonal1[0] == @jugador_actual.simbolo)
+      return true
+    end
+    if (diagonal2.uniq.size <= 1) && (diagonal2[0] == @jugador_actual.simbolo)
+      return true
+    end
+    puts diagonal2
+    false
   end
-
+  
   def empate
     for row in @tablero do
-      if row.include?(0)
+      if row.include?(' ')
         return false
       end
     end
@@ -66,7 +116,7 @@ class Tictactoe
 
   def jugar_again
     loop do
-      print "Jugar otra vez? y/n"
+      print 'Jugar otra vez? y/n'
       awnser = gets.chomp.downcase
       if awnser == 'n'
         exit
@@ -83,20 +133,16 @@ class Tictactoe
 
   def partida
     puts 'Bienvenidos a una partida de tres en raya!'
-    sleep(1)
     loop do
       puts 'Tablero:'
       print_tablero
-      sleep(0.5)
       @jugador_actual.escogerposi
       if ganador(@jugador_actual)
         print_tablero
-        sleep(0.5)
         puts "El ganador es: #{@jugador_actual.nombre}"
         jugar_again
       elsif empate
         print_tablero
-        sleep(0.5)
         puts 'Empate!'
         jugar_again
       end
