@@ -101,10 +101,9 @@ class Tictactoe
     if (diagonal2.uniq.size <= 1) && (diagonal2[0] == @jugador_actual.simbolo)
       return true
     end
-    puts diagonal2
     false
   end
-  
+
   def empate
     for row in @tablero do
       if row.include?(' ')
