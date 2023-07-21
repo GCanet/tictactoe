@@ -52,20 +52,43 @@ class Tictactoe
       Jugador.new(self, 'o', 'kaNEt')
     ]
     @jugador_actual = @jugadores[0]
-    @tablero = [
-      [' ', ' ', ' '],
-      [' ', ' ', ' '],
-      [' ', ' ', ' ']
-    ]
+    @tablero = []
+  end
+
+  def create_tablero
+    puts 'Escoja el tamaño del tablero:'
+    board_size = gets.to_i
+    for i in 1..board_size do
+      temparray = []
+      for j in 1..board_size do
+        temparray.push(' ')
+      end
+      @tablero.push(temparray)
+    end
+    partida
   end
 
   def print_tablero
-    divisor = '---+---+---'
-    puts " #{@tablero[0][0]} | #{@tablero[0][1]} | #{@tablero[0][2]} "
+    divisor = ' '
+    for i in 1..(@tablero.length) do
+      divisor += '---'
+      if i < @tablero.length
+        divisor += '+'
+      end
+    end
     puts divisor
-    puts " #{@tablero[1][0]} | #{@tablero[1][1]} | #{@tablero[1][2]} "
-    puts divisor
-    puts " #{@tablero[2][0]} | #{@tablero[2][1]} | #{@tablero[2][2]} "
+    @tablero.each do |row|
+      row.each_with_index do |col, j|
+        if j == 0
+          print "|"
+        end
+        print " #{col} " + '|'
+        if j == (row.length() - 1)
+          puts ' '
+        end
+      end
+      puts divisor
+    end
   end
 
   def ganador(*)
@@ -152,4 +175,4 @@ class Tictactoe
 end
 
 new_game = Tictactoe.new
-new_game.partida
+new_game.create_tablero
